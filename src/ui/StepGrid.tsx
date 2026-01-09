@@ -2,10 +2,41 @@ import type { Step } from "../audio/patternStore";
 
 type Props = {
   pattern: Step[];
+  playhead: number;
   onToggle: (index: number, key: keyof Step) => void;
 };
 
-export function StepGrid({ pattern, onToggle }: Props) {
+function StepButton({
+  active,
+  isPlayhead,
+  onClick,
+  ariaLabel,
+}: {
+  active: boolean;
+  isPlayhead: boolean;
+  onClick: () => void;
+  ariaLabel: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        height: 34,
+        borderRadius: 8,
+        border: isPlayhead
+          ? "2px solid rgba(255,255,255,0.9)"
+          : "1px solid rgba(255,255,255,0.2)",
+        background: active
+          ? "rgba(255,255,255,0.25)"
+          : "rgba(255,255,255,0.05)",
+        cursor: "pointer",
+      }}
+      aria-label={ariaLabel}
+    />
+  );
+}
+
+export function StepGrid({ pattern, playhead, onToggle }: Props) {
   return (
     <div style={{ display: "grid", gap: 10 }}>
       <div style={{ fontWeight: 600 }}>Kick</div>
@@ -17,19 +48,12 @@ export function StepGrid({ pattern, onToggle }: Props) {
         }}
       >
         {pattern.map((step, i) => (
-          <button
+          <StepButton
             key={`kick-${i}`}
+            active={step.kick}
+            isPlayhead={i === playhead}
             onClick={() => onToggle(i, "kick")}
-            style={{
-              height: 34,
-              borderRadius: 8,
-              border: "1px solid rgba(255,255,255,0.2)",
-              background: step.kick
-                ? "rgba(255,255,255,0.25)"
-                : "rgba(255,255,255,0.05)",
-              cursor: "pointer",
-            }}
-            aria-label={`Kick step ${i + 1}`}
+            ariaLabel={`Kick step ${i + 1}`}
           />
         ))}
       </div>
@@ -43,19 +67,12 @@ export function StepGrid({ pattern, onToggle }: Props) {
         }}
       >
         {pattern.map((step, i) => (
-          <button
+          <StepButton
             key={`chord-${i}`}
+            active={step.chord}
+            isPlayhead={i === playhead}
             onClick={() => onToggle(i, "chord")}
-            style={{
-              height: 34,
-              borderRadius: 8,
-              border: "1px solid rgba(255,255,255,0.2)",
-              background: step.chord
-                ? "rgba(255,255,255,0.25)"
-                : "rgba(255,255,255,0.05)",
-              cursor: "pointer",
-            }}
-            aria-label={`Chord step ${i + 1}`}
+            ariaLabel={`Chord step ${i + 1}`}
           />
         ))}
       </div>

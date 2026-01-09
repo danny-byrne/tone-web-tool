@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { initAudio, play, stop, setBpm } from "./audio/engine";
 import { startScheduler, stopScheduler } from "./audio/scheduler";
 import { playTestChord } from "./audio/instruments";
 import { StepGrid } from "./ui/stepGrid";
 import { getPattern, toggleStep, resetPattern } from "./audio/patternStore";
+import { getPlayhead, subscribePlayhead } from "./audio/playheadStore";
 
 export default function App() {
   const [started, setStarted] = useState(false);
   const [bpm, setBpmState] = useState(90);
   const [patternVersion, setPatternVersion] = useState(0);
+  const [playhead, setPlayhead] = useState(getPlayhead());
+
+  useEffect(() => {
+    return subscribePlayhead(setPlayhead);
+  }, []);
 
   const pattern = getPattern();
 
@@ -79,7 +85,7 @@ export default function App() {
         Click steps to toggle. Scheduler reads pattern store every 16th note.
       </div>
 
-      <StepGrid pattern={pattern} onToggle={handleToggle} />
+      <StepGrid pattern={pattern} playhead={playhead} onToggle={handleToggle} />
     </div>
   );
 }

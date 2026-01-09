@@ -1,6 +1,7 @@
 import { getTransport } from "tone";
 import { triggerKick, triggerChord } from "./instruments";
 import { getPattern } from "./patternStore";
+import { setPlayhead } from "./playheadStore";
 
 const transport = getTransport();
 
@@ -13,7 +14,11 @@ export function startScheduler() {
 
   eventId = transport.scheduleRepeat((time) => {
     const pattern = getPattern();
-    const step = pattern[stepIndex % pattern.length];
+    const idx = stepIndex % pattern.length;
+    const step = pattern[idx];
+
+    // publish playhead for UI
+    setPlayhead(idx);
 
     if (step.kick) triggerKick(time);
     if (step.chord) triggerChord(time);
@@ -26,4 +31,5 @@ export function stopScheduler() {
   if (eventId === null) return;
   transport.clear(eventId);
   eventId = null;
+  setPlayhead(0);
 }
