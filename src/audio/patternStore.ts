@@ -39,3 +39,7 @@ export function toggleStep(index: number, key: keyof Step) {
 export function resetPattern() {
   pattern = DEFAULT_PATTERN.map((s) => ({ ...s }));
 }
+
+export function setPatternFromSteps(next: Step[]) {
+  setPattern(next);
+}
