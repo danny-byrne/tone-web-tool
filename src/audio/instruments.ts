@@ -1,5 +1,5 @@
-import { getDestination } from "tone";
 import * as Tone from "tone";
+import { getFxInput } from "./fx";
 
 let poly: Tone.PolySynth<Tone.Synth> | null = null;
 let perc: Tone.MembraneSynth | null = null;
@@ -9,7 +9,7 @@ function ensurePoly() {
   poly = new Tone.PolySynth(Tone.Synth, {
     oscillator: { type: "sawtooth" },
     envelope: { attack: 0.01, release: 0.8 },
-  }).connect(getDestination());
+  }).connect(getFxInput());
   return poly;
 }
 
@@ -19,7 +19,7 @@ function ensurePerc() {
     pitchDecay: 0.02,
     octaves: 6,
     envelope: { attack: 0.001, decay: 0.3, sustain: 0 },
-  }).connect(getDestination());
+  }).connect(getFxInput());
   return perc;
 }
 

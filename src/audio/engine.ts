@@ -1,4 +1,5 @@
 import { start, getTransport } from "tone";
+import { initFxChain } from "./fx";
 
 let initialized = false;
 const transport = getTransport();
@@ -6,6 +7,7 @@ const transport = getTransport();
 export async function initAudio() {
   if (initialized) return;
   await start(); // unlock AudioContext (must be called from a user gesture)
+  initFxChain();
 
   transport.bpm.value = 90;
   transport.loop = true;

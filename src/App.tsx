@@ -5,6 +5,7 @@ import { playTestChord } from "./audio/instruments";
 import { StepGrid } from "./ui/stepGrid";
 import { getPattern, toggleStep, resetPattern } from "./audio/patternStore";
 import { getPlayhead, subscribePlayhead } from "./audio/playheadStore";
+import { FxPanel } from "./ui/FxPanel";
 
 export default function App() {
   const [started, setStarted] = useState(false);
@@ -80,6 +81,7 @@ export default function App() {
           disabled={!started}
         />
       </label>
+      <FxPanel disabled={!started} />
 
       <div style={{ opacity: 0.9 }}>
         Click steps to toggle. Scheduler reads pattern store every 16th note.
