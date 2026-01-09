@@ -1,31 +1,8 @@
 import { getTransport } from "tone";
 import { triggerKick, triggerChord } from "./instruments";
+import { getPattern } from "./patternStore";
 
 const transport = getTransport();
-
-type Step = {
-  kick: boolean;
-  chord: boolean;
-};
-
-const pattern: Step[] = [
-  { kick: true, chord: true },
-  { kick: false, chord: false },
-  { kick: false, chord: true },
-  { kick: false, chord: false },
-  { kick: true, chord: false },
-  { kick: false, chord: false },
-  { kick: false, chord: true },
-  { kick: false, chord: false },
-  { kick: true, chord: true },
-  { kick: false, chord: false },
-  { kick: false, chord: true },
-  { kick: false, chord: false },
-  { kick: true, chord: false },
-  { kick: false, chord: false },
-  { kick: false, chord: true },
-  { kick: false, chord: false },
-];
 
 let eventId: number | null = null;
 
@@ -34,8 +11,8 @@ export function startScheduler() {
 
   let stepIndex = 0;
 
-  // 16th-note step sequencer
   eventId = transport.scheduleRepeat((time) => {
+    const pattern = getPattern();
     const step = pattern[stepIndex % pattern.length];
 
     if (step.kick) triggerKick(time);

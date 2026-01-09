@@ -2,10 +2,15 @@ import { useState } from "react";
 import { initAudio, play, stop, setBpm } from "./audio/engine";
 import { startScheduler, stopScheduler } from "./audio/scheduler";
 import { playTestChord } from "./audio/instruments";
+import { StepGrid } from "./ui/stepGrid";
+import { getPattern, toggleStep, resetPattern } from "./audio/patternStore";
 
 export default function App() {
   const [started, setStarted] = useState(false);
   const [bpm, setBpmState] = useState(90);
+  const [patternVersion, setPatternVersion] = useState(0);
+
+  const pattern = getPattern();
 
   const handleStart = async () => {
     await initAudio();
@@ -25,19 +30,38 @@ export default function App() {
     setBpm(next);
   };
 
+  const handleToggle = (index: number, key: "kick" | "chord") => {
+    toggleStep(index, key);
+    setPatternVersion((v) => v + 1); // force UI refresh
+  };
+
+  const handleReset = () => {
+    resetPattern();
+    setPatternVersion((v) => v + 1);
+  };
+
   return (
-    <div style={{ padding: 24, display: "grid", gap: 12, maxWidth: 520 }}>
+    <div style={{ padding: 24, display: "grid", gap: 12, maxWidth: 720 }}>
       <h1>Tone.js WebAudio Tool</h1>
 
-      {!started ? (
-        <button onClick={handleStart}>Start</button>
-      ) : (
-        <button onClick={handleStop}>Stop</button>
-      )}
+      <div style={{ display: "flex", gap: 8 }}>
+        {!started ? (
+          <button onClick={handleStart}>Start</button>
+        ) : (
+          <button onClick={handleStop}>Stop</button>
+        )}
 
-      <button onClick={playTestChord} disabled={!started}>
-        Test chord
-      </button>
+        <button onClick={playTestChord} disabled={!started}>
+          Test chord
+        </button>
+
+        <button
+          onClick={handleReset}
+          disabled={!started && patternVersion === patternVersion}
+        >
+          Reset pattern
+        </button>
+      </div>
 
       <label style={{ display: "grid", gap: 6 }}>
         BPM: {bpm}
@@ -51,9 +75,11 @@ export default function App() {
         />
       </label>
 
-      <p style={{ opacity: 0.8, marginTop: 8 }}>
-        Sequencer runs on Tone&#39;s Transport clock, not React timing.
-      </p>
+      <div style={{ opacity: 0.9 }}>
+        Click steps to toggle. Scheduler reads pattern store every 16th note.
+      </div>
+
+      <StepGrid pattern={pattern} onToggle={handleToggle} />
     </div>
   );
 }
