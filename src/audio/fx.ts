@@ -16,6 +16,7 @@ export type FxParams = {
   filterCutoff: number; // Hz
   filterQ: number; // 0.1..20
   delayTime: number; // seconds
+  delayWet: number; // 0..1
   delayFeedback: number; // 0..0.95
   reverbWet: number; // 0..1
 };
@@ -26,6 +27,7 @@ const params: FxParams = {
   filterQ: 0.8,
   delayTime: 0.2,
   delayFeedback: 0.25,
+  delayWet: 0.25,
   reverbWet: 0.15,
 };
 
@@ -39,7 +41,7 @@ export function initFxChain() {
   delay = new Tone.FeedbackDelay({
     delayTime: params.delayTime,
     feedback: params.delayFeedback,
-    wet: 0.25,
+    wet: params.delayWet,
   });
 
   reverb = new Tone.Reverb({
@@ -94,6 +96,12 @@ export function setDelayFeedback(value: number) {
   params.delayFeedback = clamp(value, 0, 0.95);
   initFxChain();
   delay.feedback.rampTo(params.delayFeedback, 0.05);
+}
+
+export function setDelayWet(value: number) {
+  params.delayWet = clamp01(value);
+  initFxChain();
+  delay.wet.rampTo(params.delayWet, 0.05);
 }
 
 export function setReverbWet(value: number) {

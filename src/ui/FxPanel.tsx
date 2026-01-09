@@ -6,6 +6,7 @@ import {
   setFilterQ,
   setDelayTime,
   setDelayFeedback,
+  setDelayWet,
   setReverbWet,
 } from "../audio/fx";
 
@@ -46,6 +47,7 @@ export function FxPanel({ disabled }: { disabled: boolean }) {
   const [delayTime, setDelayTimeUi] = useState(initial.delayTime);
   const [delayFb, setDelayFbUi] = useState(initial.delayFeedback);
   const [revWet, setRevWetUi] = useState(initial.reverbWet);
+  const [delayWet, setDelayWetUi] = useState(initial.delayWet);
 
   return (
     <div
@@ -135,6 +137,22 @@ export function FxPanel({ disabled }: { disabled: boolean }) {
             const v = Number(e.target.value);
             setDelayFbUi(v);
             setDelayFeedback(v);
+          }}
+        />
+      </Row>
+
+      <Row label="Delay Wet" valueLabel={delayWet.toFixed(2)}>
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          value={delayWet}
+          disabled={disabled}
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            setDelayWetUi(v);
+            setDelayWet(v);
           }}
         />
       </Row>
